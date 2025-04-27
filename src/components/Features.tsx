@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { FileConvert, FileDown, Lock, Wand2, Repeat, Cloud } from "lucide-react";
+import { File, FileDown, Lock, Wand2, Repeat, Cloud } from "lucide-react";
 
 const features = [
   {
-    icon: <FileConvert className="w-6 h-6 text-fileforge-blue" />,
+    icon: <File className="w-6 h-6 text-fileforge-blue" />,
     title: 'Multi-Format Conversion',
     description: 'Convert between DOC, PDF, PNG, JPG, WebP, MP4, AVI, MOV, MP3, WAV and more with ease.'
   },
