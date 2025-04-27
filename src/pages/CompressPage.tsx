@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -11,34 +10,30 @@ import { Slider } from '@/components/ui/slider';
 import { useToast } from '@/components/ui/use-toast';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import { useAuth } from '@/hooks/useAuth';
+import { Navigate } from 'react-router-dom';
+import { useFileProcessing } from '@/hooks/useFileProcessing';
+import ProcessingStatus from '@/components/ProcessingStatus';
 
 const CompressPage = () => {
+  const { user } = useAuth();
+  const { isProcessing, progress, processFile } = useFileProcessing();
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [fileType, setFileType] = useState('document');
-  const [files, setFiles] = useState<File[]>([]);
   const [compressionLevel, setCompressionLevel] = useState(50);
   const [qualityMode, setQualityMode] = useState('balanced');
   const { toast } = useToast();
 
-  const handleFilesSelected = (selectedFiles: File[]) => {
-    setFiles(selectedFiles);
-  };
+  // Redirect to auth page if not authenticated
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
 
-  const handleCompress = () => {
-    if (files.length === 0) {
-      toast({
-        title: "No files selected",
-        description: "Please upload files to compress.",
-        variant: "destructive",
-      });
-      return;
+  const handleFilesSelected = async (files: File[]) => {
+    if (files.length > 0) {
+      setCurrentFile(files[0]);
+      await processFile(files[0], 'compress');
     }
-
-    toast({
-      title: "Compression started",
-      description: `Compressing ${files.length} file(s) with ${qualityMode} quality mode. This would connect to a real compression API in a production environment.`,
-    });
-
-    // In a real app, this would call an API to process the files
   };
 
   const getAcceptedFileTypes = () => {
@@ -105,7 +100,7 @@ const CompressPage = () => {
                 <div className="space-y-6">
                   <FileUploader
                     accept={getAcceptedFileTypes()}
-                    maxFiles={5}
+                    maxFiles={1}
                     onFilesSelected={handleFilesSelected}
                     title={`Upload your ${fileType} files`}
                     subtitle={`Drag and drop your ${fileType} files here, or click to browse`}
@@ -160,13 +155,20 @@ const CompressPage = () => {
                     </div>
                     
                     <Button 
-                      onClick={handleCompress}
+                      onClick={() => currentFile && processFile(currentFile, 'compress')}
                       className="w-full mt-4 bg-gradient-to-r from-fileforge-blue to-fileforge-teal"
-                      disabled={files.length === 0}
+                      disabled={!currentFile}
                     >
                       Compress Files
                     </Button>
                   </div>
+                  {isProcessing && currentFile && (
+                    <ProcessingStatus
+                      status="uploading"
+                      progress={progress}
+                      fileName={currentFile.name}
+                    />
+                  )}
                 </div>
               </Tabs>
             </CardContent>
