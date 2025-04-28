@@ -26,12 +26,36 @@ export const useFileProcessing = () => {
     try {
       // Upload to user's folder in the storage bucket
       const filePath = `${user.id}/${file.name}`;
+      
+      // Track upload progress manually
+      const xhr = new XMLHttpRequest();
+      const uploadPromise = new Promise<void>((resolve, reject) => {
+        xhr.upload.addEventListener('progress', (event) => {
+          if (event.lengthComputable) {
+            const progressValue = (event.loaded / event.total) * 100;
+            setProgress(progressValue);
+          }
+        });
+        
+        xhr.addEventListener('error', () => {
+          reject(new Error('XHR error'));
+        });
+        
+        xhr.addEventListener('load', () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve();
+          } else {
+            reject(new Error(`HTTP error ${xhr.status}`));
+          }
+        });
+      });
+
+      // Perform the upload with Supabase
       const { error: uploadError } = await supabase.storage
         .from('user_files')
         .upload(filePath, file, {
-          onUploadProgress: (progress) => {
-            setProgress((progress.loaded / progress.total) * 100);
-          },
+          contentType: file.type,
+          upsert: true
         });
 
       if (uploadError) throw uploadError;

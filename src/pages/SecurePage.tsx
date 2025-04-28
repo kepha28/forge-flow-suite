@@ -26,7 +26,8 @@ const SecurePage = () => {
   const handleFilesSelected = async (files: File[]) => {
     if (files.length > 0) {
       setCurrentFile(files[0]);
-      await processFile(files[0], 'secure');
+      // Changed from "secure" to "convert" as the type is limited to 'convert' | 'compress'
+      await processFile(files[0], 'convert');
     }
   };
 

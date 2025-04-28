@@ -49,11 +49,11 @@ export const useFileConversions = () => {
         }, 
         payload => {
           if (payload.eventType === 'INSERT') {
-            setConversions(prev => [payload.new, ...prev]);
+            setConversions(prev => [payload.new as FileConversion, ...prev]);
           } else if (payload.eventType === 'UPDATE') {
             setConversions(prev => 
               prev.map(conv => 
-                conv.id === payload.new.id ? payload.new : conv
+                conv.id === payload.new.id ? payload.new as FileConversion : conv
               )
             );
           }
