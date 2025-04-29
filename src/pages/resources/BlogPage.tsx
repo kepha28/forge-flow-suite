@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Blog, Calendar, ArrowRight } from "lucide-react";
+import { FileText, Calendar, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -52,7 +52,7 @@ const BlogPage = () => {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <div className="flex justify-center mb-4">
-              <Blog size={36} className="text-fileforge-blue" />
+              <FileText size={36} className="text-fileforge-blue" />
             </div>
             <h1 className="text-3xl font-bold mb-4">FileForge Blog</h1>
             <p className="text-gray-600 max-w-2xl mx-auto">
