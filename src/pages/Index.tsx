@@ -9,8 +9,23 @@ import Pricing from '@/components/Pricing';
 import Testimonials from '@/components/Testimonials';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
+import { useFileProcessing } from '@/hooks/useFileProcessing';
+import { useToast } from '@/components/ui/use-toast';
 
 const Index = () => {
+  const { isProcessing, progress, processFile } = useFileProcessing();
+  const { toast } = useToast();
+  
+  const handleGuestUpload = async (files: File[]) => {
+    if (files.length > 0) {
+      // For guests, just show a toast encouraging account creation
+      toast({
+        title: "Create an account for full features",
+        description: "Sign up to access all conversion options and save your files.",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-fileforge-gray">
       <Header />
@@ -34,6 +49,7 @@ const Index = () => {
                   accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
                   maxSize={50}
                   maxFiles={5}
+                  onFilesSelected={handleGuestUpload}
                 />
               </CardContent>
             </Card>

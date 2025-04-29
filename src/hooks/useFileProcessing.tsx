@@ -1,8 +1,9 @@
 
 import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { fileConversionService } from '@/services/api';
 import { useAuth } from './useAuth';
+import { ConversionType } from '@/types';
 
 export const useFileProcessing = () => {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -10,7 +11,7 @@ export const useFileProcessing = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const processFile = async (file: File, type: 'convert' | 'compress') => {
+  const processFile = async (file: File, type: ConversionType) => {
     if (!user) {
       toast({
         variant: "destructive",
@@ -23,61 +24,26 @@ export const useFileProcessing = () => {
     setIsProcessing(true);
     setProgress(0);
 
-    try {
-      // Upload to user's folder in the storage bucket
-      const filePath = `${user.id}/${file.name}`;
-      
-      // Track upload progress manually
-      const xhr = new XMLHttpRequest();
-      const uploadPromise = new Promise<void>((resolve, reject) => {
-        xhr.upload.addEventListener('progress', (event) => {
-          if (event.lengthComputable) {
-            const progressValue = (event.loaded / event.total) * 100;
-            setProgress(progressValue);
-          }
-        });
-        
-        xhr.addEventListener('error', () => {
-          reject(new Error('XHR error'));
-        });
-        
-        xhr.addEventListener('load', () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve();
-          } else {
-            reject(new Error(`HTTP error ${xhr.status}`));
-          }
-        });
+    // Simulate upload progress
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => {
+        const newProgress = prev + 5;
+        return newProgress >= 95 ? 95 : newProgress;
       });
+    }, 300);
 
-      // Perform the upload with Supabase
-      const { error: uploadError } = await supabase.storage
-        .from('user_files')
-        .upload(filePath, file, {
-          contentType: file.type,
-          upsert: true
-        });
+    try {
+      const { success, error } = await fileConversionService.processFile(file, type, user.id);
 
-      if (uploadError) throw uploadError;
-
-      // Create a record in the file_conversions table
-      const { error: dbError } = await supabase
-        .from('file_conversions')
-        .insert({
-          user_id: user.id,
-          input_file_name: file.name,
-          input_file_type: file.type,
-          input_file_size: file.size,
-          conversion_type: type,
-          status: 'processing'
-        });
-
-      if (dbError) throw dbError;
+      if (!success) throw new Error(error);
 
       toast({
         title: "File uploaded successfully",
         description: "Your file is now being processed.",
       });
+      
+      // Set to 100% when done
+      setProgress(100);
 
     } catch (error: any) {
       toast({
@@ -86,8 +52,11 @@ export const useFileProcessing = () => {
         description: error.message,
       });
     } finally {
-      setIsProcessing(false);
-      setProgress(0);
+      clearInterval(progressInterval);
+      setTimeout(() => {
+        setIsProcessing(false);
+        setProgress(0);
+      }, 1000); // Reset after showing 100% for a moment
     }
   };
 

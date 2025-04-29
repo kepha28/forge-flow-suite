@@ -1,15 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
-import { supabase } from '@/integrations/supabase/client';
-
-interface FileConversion {
-  id: string;
-  input_file_name: string;
-  output_file_name: string | null;
-  status: string;
-  created_at: string;
-}
+import { fileConversionService } from '@/services/api';
+import { FileConversion } from '@/types';
 
 export const useFileConversions = () => {
   const [conversions, setConversions] = useState<FileConversion[]>([]);
@@ -21,13 +14,8 @@ export const useFileConversions = () => {
 
     const fetchConversions = async () => {
       try {
-        const { data, error } = await supabase
-          .from('file_conversions')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        setConversions(data || []);
+        const data = await fileConversionService.getConversions();
+        setConversions(data);
       } catch (error) {
         console.error('Error fetching conversions:', error);
       } finally {
@@ -38,32 +26,19 @@ export const useFileConversions = () => {
     fetchConversions();
 
     // Subscribe to realtime updates
-    const channel = supabase
-      .channel('public:file_conversions')
-      .on('postgres_changes', 
-        { 
-          event: '*', 
-          schema: 'public', 
-          table: 'file_conversions',
-          filter: `user_id=eq.${user.id}`
-        }, 
-        payload => {
-          if (payload.eventType === 'INSERT') {
-            setConversions(prev => [payload.new as FileConversion, ...prev]);
-          } else if (payload.eventType === 'UPDATE') {
-            setConversions(prev => 
-              prev.map(conv => 
-                conv.id === payload.new.id ? payload.new as FileConversion : conv
-              )
-            );
-          }
+    const unsubscribe = fileConversionService.subscribeToConversions(user.id, (newConversion) => {
+      setConversions(prev => {
+        // If it's an update to an existing conversion
+        const exists = prev.some(c => c.id === newConversion.id);
+        if (exists) {
+          return prev.map(c => c.id === newConversion.id ? newConversion : c);
         }
-      )
-      .subscribe();
+        // If it's a new conversion
+        return [newConversion, ...prev];
+      });
+    });
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return unsubscribe;
   }, [user]);
 
   return { conversions, loading };
