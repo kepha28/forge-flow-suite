@@ -5,6 +5,15 @@ import { appConfig } from '@/config/app-config';
 
 // Abstract all Supabase API operations behind service functions
 
+// Helper function to validate conversion type
+const validateConversionType = (type: string): ConversionType => {
+  if (type === 'convert' || type === 'compress' || type === 'secure') {
+    return type as ConversionType;
+  }
+  // Default to 'convert' if an invalid value is found
+  return 'convert';
+};
+
 // File Conversion Services
 export const fileConversionService = {
   // Get all conversions for the current user
@@ -16,7 +25,15 @@ export const fileConversionService = {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      
+      // Map the database results to ensure conversion_type is correctly typed
+      return (data || []).map(item => ({
+        ...item,
+        conversion_type: validateConversionType(item.conversion_type),
+        output_file_name: item.output_file_name || null,
+        output_file_size: item.output_file_size || null,
+        output_file_type: item.output_file_type || null,
+      }));
     } catch (error) {
       console.error('Error fetching conversions:', error);
       return [];
@@ -73,7 +90,13 @@ export const fileConversionService = {
         }, 
         payload => {
           if (payload.new) {
-            callback(payload.new as FileConversion);
+            // Ensure proper typing for the conversion_type field
+            const conversion = {
+              ...payload.new as any,
+              conversion_type: validateConversionType((payload.new as any).conversion_type)
+            } as FileConversion;
+            
+            callback(conversion);
           }
         }
       )
