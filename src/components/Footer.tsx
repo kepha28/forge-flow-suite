@@ -37,20 +37,20 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4 text-gray-100">Resources</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-300 hover:text-fileforge-teal">Blog</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-fileforge-teal">Help Center</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-fileforge-teal">API Documentation</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-fileforge-teal">Status</a></li>
+              <li><Link to="/blog" className="text-gray-300 hover:text-fileforge-teal">Blog</Link></li>
+              <li><Link to="/help" className="text-gray-300 hover:text-fileforge-teal">Help Center</Link></li>
+              <li><Link to="/docs" className="text-gray-300 hover:text-fileforge-teal">API Documentation</Link></li>
+              <li><Link to="/status" className="text-gray-300 hover:text-fileforge-teal">Status</Link></li>
             </ul>
           </div>
           
           <div>
             <h4 className="font-semibold mb-4 text-gray-100">Company</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-300 hover:text-fileforge-teal">About Us</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-fileforge-teal">Careers</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-fileforge-teal">Legal</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-fileforge-teal">Contact</a></li>
+              <li><Link to="/about" className="text-gray-300 hover:text-fileforge-teal">About Us</Link></li>
+              <li><Link to="/careers" className="text-gray-300 hover:text-fileforge-teal">Careers</Link></li>
+              <li><Link to="/legal" className="text-gray-300 hover:text-fileforge-teal">Legal</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-fileforge-teal">Contact</Link></li>
             </ul>
           </div>
         </div>
@@ -58,9 +58,9 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400">&copy; {new Date().getFullYear()} FileForge Suite. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="text-gray-400 hover:text-fileforge-teal">Terms</a>
-            <a href="#" className="text-gray-400 hover:text-fileforge-teal">Privacy</a>
-            <a href="#" className="text-gray-400 hover:text-fileforge-teal">Cookies</a>
+            <Link to="/terms" className="text-gray-400 hover:text-fileforge-teal">Terms</Link>
+            <Link to="/privacy" className="text-gray-400 hover:text-fileforge-teal">Privacy</Link>
+            <Link to="/cookies" className="text-gray-400 hover:text-fileforge-teal">Cookies</Link>
           </div>
         </div>
       </div>
