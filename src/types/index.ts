@@ -5,7 +5,8 @@
 export interface UserProfile {
   id: string;
   email: string;
-  fullName?: string;
+  fullName?: string | null;
+  tier?: 'free' | 'pro' | 'premium' | 'enterprise';
 }
 
 // File processing

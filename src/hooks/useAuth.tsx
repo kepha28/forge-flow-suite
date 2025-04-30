@@ -3,10 +3,12 @@ import { useEffect, useState, createContext, useContext } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { UserProfile } from '@/types';
 
 interface AuthContextType {
   session: Session | null;
   user: User | null;
+  userProfile: UserProfile | null;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -19,8 +21,35 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Fetch user profile when user changes
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user) return;
+      
+      try {
+        // For demonstration purposes, we'll create a mock profile
+        // In a real app, you would fetch this from your database
+        setUserProfile({
+          id: user.id,
+          email: user.email || '',
+          fullName: user.user_metadata?.full_name || null,
+          tier: 'free' // Default tier
+        });
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+    
+    if (user) {
+      fetchUserProfile();
+    } else {
+      setUserProfile(null);
+    }
+  }, [user]);
 
   useEffect(() => {
     // Set up auth state listener
@@ -108,6 +137,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider value={{ 
       session, 
       user, 
+      userProfile,
       signIn, 
       signUp, 
       signOut, 
