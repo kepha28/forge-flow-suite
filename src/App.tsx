@@ -42,7 +42,7 @@ import TermsPage from "./pages/legal/TermsPage";
 import PrivacyPage from "./pages/legal/PrivacyPage";
 import CookiesPage from "./pages/legal/CookiesPage";
 
-// Import new pages
+// Import user pages
 import ProfilePage from "./pages/ProfilePage";
 import HistoryPage from "./pages/HistoryPage";
 import FilesPage from "./pages/FilesPage";
@@ -73,40 +73,33 @@ const App = () => (
                 <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/" element={<Index />} />
                 <Route path="/pricing" element={<PricingPage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/help" element={<HelpCenterPage />} />
+                <Route path="/docs" element={<ApiDocsPage />} />
+                <Route path="/status" element={<StatusPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/careers" element={<CareersPage />} />
+                <Route path="/legal" element={<LegalPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/cookies" element={<CookiesPage />} />
                 
                 {/* Protected Routes */}
                 <Route path="/convert" element={<ProtectedRoute><ConvertPage /></ProtectedRoute>} />
                 <Route path="/compress" element={<ProtectedRoute><CompressPage /></ProtectedRoute>} />
                 <Route path="/secure" element={<ProtectedRoute><SecurePage /></ProtectedRoute>} />
                 
-                <Route path="/convert/document" element={<ProtectedRoute><DocumentConvertPage /></ProtectedRoute>} />
-                <Route path="/convert/image" element={<ProtectedRoute><ImageConvertPage /></ProtectedRoute>} />
-                <Route path="/convert/video" element={<ProtectedRoute><VideoConvertPage /></ProtectedRoute>} />
-                <Route path="/convert/audio" element={<ProtectedRoute><AudioConvertPage /></ProtectedRoute>} />
+                <Route path="/convert/document" element={<DocumentConvertPage />} />
+                <Route path="/convert/image" element={<ImageConvertPage />} />
+                <Route path="/convert/video" element={<VideoConvertPage />} />
+                <Route path="/convert/audio" element={<AudioConvertPage />} />
                 
-                {/* New Protected Routes */}
                 <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                 <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
                 <Route path="/files" element={<ProtectedRoute><FilesPage /></ProtectedRoute>} />
                 <Route path="/stats" element={<ProtectedRoute><StatsPage /></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-                
-                {/* Resource Pages */}
-                <Route path="/blog" element={<BlogPage />} />
-                <Route path="/help" element={<HelpCenterPage />} />
-                <Route path="/docs" element={<ApiDocsPage />} />
-                <Route path="/status" element={<StatusPage />} />
-                
-                {/* Company Pages */}
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/careers" element={<CareersPage />} />
-                <Route path="/legal" element={<LegalPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                
-                {/* Legal Pages */}
-                <Route path="/terms" element={<TermsPage />} />
-                <Route path="/privacy" element={<PrivacyPage />} />
-                <Route path="/cookies" element={<CookiesPage />} />
                 
                 {/* 404 Route */}
                 <Route path="*" element={<NotFound />} />
