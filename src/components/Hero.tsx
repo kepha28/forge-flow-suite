@@ -1,7 +1,8 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, FileText, Lock, Zap } from "lucide-react";
+import { ArrowRight, FileText } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -15,11 +16,15 @@ const Hero = () => {
             Convert, compress, secure, and optimize your documents, images, videos, and audio files with our all-in-one file management solution.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button size="lg" className="bg-white text-fileforge-blue hover:bg-gray-100">
-              Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
+            <Button size="lg" className="bg-white text-fileforge-blue hover:bg-gray-100" asChild>
+              <Link to="/auth">
+                Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
-              View Pricing
+            <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10" asChild>
+              <Link to="/pricing">
+                View Pricing
+              </Link>
             </Button>
           </div>
           <div className="mt-8 flex items-center">
@@ -46,8 +51,10 @@ const Hero = () => {
               <FileText className="h-12 w-12 mb-4 text-fileforge-teal" />
               <p className="text-center">Drag & drop your files here</p>
               <p className="text-sm text-gray-300 mt-1">or</p>
-              <Button variant="secondary" className="mt-4 bg-white text-fileforge-blue hover:bg-gray-100">
-                Browse Files
+              <Button variant="secondary" className="mt-4 bg-white text-fileforge-blue hover:bg-gray-100" asChild>
+                <Link to="/convert">
+                  Browse Files
+                </Link>
               </Button>
             </div>
             <div className="mt-6 bg-white/5 rounded-lg p-3">

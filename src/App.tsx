@@ -42,6 +42,13 @@ import TermsPage from "./pages/legal/TermsPage";
 import PrivacyPage from "./pages/legal/PrivacyPage";
 import CookiesPage from "./pages/legal/CookiesPage";
 
+// Import new pages
+import ProfilePage from "./pages/ProfilePage";
+import HistoryPage from "./pages/HistoryPage";
+import FilesPage from "./pages/FilesPage";
+import StatsPage from "./pages/StatsPage";
+import SettingsPage from "./pages/SettingsPage";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -76,6 +83,13 @@ const App = () => (
                 <Route path="/convert/image" element={<ProtectedRoute><ImageConvertPage /></ProtectedRoute>} />
                 <Route path="/convert/video" element={<ProtectedRoute><VideoConvertPage /></ProtectedRoute>} />
                 <Route path="/convert/audio" element={<ProtectedRoute><AudioConvertPage /></ProtectedRoute>} />
+                
+                {/* New Protected Routes */}
+                <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
+                <Route path="/files" element={<ProtectedRoute><FilesPage /></ProtectedRoute>} />
+                <Route path="/stats" element={<ProtectedRoute><StatsPage /></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
                 
                 {/* Resource Pages */}
                 <Route path="/blog" element={<BlogPage />} />

@@ -1,16 +1,16 @@
 
 import React from 'react';
-import Header from '@/components/Header';
+import { Link } from 'react-router-dom';
 import Hero from '@/components/Hero';
 import Features from '@/components/Features';
 import ConversionTools from '@/components/ConversionTools';
 import FileUploader from '@/components/FileUploader';
 import Pricing from '@/components/Pricing';
 import Testimonials from '@/components/Testimonials';
-import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { useFileProcessing } from '@/hooks/useFileProcessing';
 import { useToast } from '@/components/ui/use-toast';
+import AppLayout from '@/components/layout/AppLayout';
 
 const Index = () => {
   const { isProcessing, progress, processFile } = useFileProcessing();
@@ -27,8 +27,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-fileforge-gray">
-      <Header />
+    <AppLayout showHero={true} showSidebar={false}>
       <main>
         <Hero />
         <Features />
@@ -60,8 +59,7 @@ const Index = () => {
         <Testimonials />
         <Pricing />
       </main>
-      <Footer />
-    </div>
+    </AppLayout>
   );
 };
 
