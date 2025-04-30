@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Navigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, KeyRound, User } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -20,6 +21,7 @@ export default function AuthPage() {
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetLoading, setResetLoading] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
   
   const { signIn, signUp, user, resetPassword } = useAuth();
   const { toast } = useToast();
@@ -64,11 +66,11 @@ export default function AuthPage() {
 
     try {
       await resetPassword(resetEmail);
+      setResetSent(true);
       toast({
         title: "Password Reset Email Sent",
         description: "Check your email for password reset instructions.",
       });
-      setIsResetDialogOpen(false);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -78,6 +80,15 @@ export default function AuthPage() {
     } finally {
       setResetLoading(false);
     }
+  };
+
+  const closeResetDialog = () => {
+    setIsResetDialogOpen(false);
+    // Reset the state after a delay to allow for the dialog closing animation
+    setTimeout(() => {
+      setResetSent(false);
+      setResetEmail('');
+    }, 300);
   };
 
   return (
@@ -176,7 +187,7 @@ export default function AuthPage() {
           <CardFooter className="flex flex-col space-y-4">
             <Button 
               type="submit" 
-              className="w-full transition-all duration-200 hover:shadow-lg"
+              className="w-full transition-all duration-200 hover:shadow-lg bg-gradient-to-r from-fileforge-blue to-fileforge-teal text-white"
               disabled={loading}
             >
               {loading ? 'Please wait...' : isLogin ? 'Sign In' : 'Create Account'}
@@ -195,47 +206,70 @@ export default function AuthPage() {
         </form>
       </Card>
 
-      <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+      <Dialog open={isResetDialogOpen} onOpenChange={closeResetDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Reset Password</DialogTitle>
             <DialogDescription>
-              Enter your email address and we'll send you a link to reset your password.
+              {!resetSent 
+                ? "Enter your email address and we'll send you a link to reset your password." 
+                : "Check your email for password reset instructions."}
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleResetPassword} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="resetEmail">Email</Label>
-              <div className="relative">
-                <Input
-                  id="resetEmail"
-                  type="email"
-                  value={resetEmail}
-                  onChange={(e) => setResetEmail(e.target.value)}
-                  required
-                  className="pl-10"
-                  placeholder="your.email@example.com"
-                />
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+          
+          {!resetSent ? (
+            <form onSubmit={handleResetPassword} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="resetEmail">Email</Label>
+                <div className="relative">
+                  <Input
+                    id="resetEmail"
+                    type="email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    required
+                    className="pl-10"
+                    placeholder="your.email@example.com"
+                  />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                </div>
               </div>
-            </div>
-            <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsResetDialogOpen(false)}
-                disabled={resetLoading}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={resetLoading}
-              >
-                {resetLoading ? 'Sending...' : 'Send Reset Link'}
-              </Button>
-            </DialogFooter>
-          </form>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={closeResetDialog}
+                  disabled={resetLoading}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={resetLoading}
+                >
+                  {resetLoading ? 'Sending...' : 'Send Reset Link'}
+                </Button>
+              </DialogFooter>
+            </form>
+          ) : (
+            <>
+              <Alert className="bg-green-50 border-green-200">
+                <AlertTitle className="text-green-800">Email sent!</AlertTitle>
+                <AlertDescription className="text-green-700">
+                  We've sent a password reset link to <strong>{resetEmail}</strong>. 
+                  Please check your inbox and follow the instructions to reset your password.
+                </AlertDescription>
+              </Alert>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  onClick={closeResetDialog}
+                >
+                  Close
+                </Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </div>

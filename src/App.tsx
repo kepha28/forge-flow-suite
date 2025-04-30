@@ -5,11 +5,14 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { AppProvider } from "@/context/AppContext";
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 // Import pages
 import Index from "./pages/Index";
 import AuthPage from "./pages/AuthPage";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import ConvertPage from "./pages/ConvertPage";
 import CompressPage from "./pages/CompressPage";
 import SecurePage from "./pages/SecurePage";
@@ -39,55 +42,67 @@ import TermsPage from "./pages/legal/TermsPage";
 import PrivacyPage from "./pages/legal/PrivacyPage";
 import CookiesPage from "./pages/legal/CookiesPage";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/" element={<Index />} />
-            <Route path="/pricing" element={<PricingPage />} />
-            
-            {/* Protected Routes */}
-            <Route path="/convert" element={<ProtectedRoute><ConvertPage /></ProtectedRoute>} />
-            <Route path="/compress" element={<ProtectedRoute><CompressPage /></ProtectedRoute>} />
-            <Route path="/secure" element={<ProtectedRoute><SecurePage /></ProtectedRoute>} />
-            
-            <Route path="/convert/document" element={<ProtectedRoute><DocumentConvertPage /></ProtectedRoute>} />
-            <Route path="/convert/image" element={<ProtectedRoute><ImageConvertPage /></ProtectedRoute>} />
-            <Route path="/convert/video" element={<ProtectedRoute><VideoConvertPage /></ProtectedRoute>} />
-            <Route path="/convert/audio" element={<ProtectedRoute><AudioConvertPage /></ProtectedRoute>} />
-            
-            {/* Resource Pages */}
-            <Route path="/blog" element={<BlogPage />} />
-            <Route path="/help" element={<HelpCenterPage />} />
-            <Route path="/docs" element={<ApiDocsPage />} />
-            <Route path="/status" element={<StatusPage />} />
-            
-            {/* Company Pages */}
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/careers" element={<CareersPage />} />
-            <Route path="/legal" element={<LegalPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            
-            {/* Legal Pages */}
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/cookies" element={<CookiesPage />} />
-            
-            {/* 404 Route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </TooltipProvider>
-      </AuthProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <AppProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/" element={<Index />} />
+                <Route path="/pricing" element={<PricingPage />} />
+                
+                {/* Protected Routes */}
+                <Route path="/convert" element={<ProtectedRoute><ConvertPage /></ProtectedRoute>} />
+                <Route path="/compress" element={<ProtectedRoute><CompressPage /></ProtectedRoute>} />
+                <Route path="/secure" element={<ProtectedRoute><SecurePage /></ProtectedRoute>} />
+                
+                <Route path="/convert/document" element={<ProtectedRoute><DocumentConvertPage /></ProtectedRoute>} />
+                <Route path="/convert/image" element={<ProtectedRoute><ImageConvertPage /></ProtectedRoute>} />
+                <Route path="/convert/video" element={<ProtectedRoute><VideoConvertPage /></ProtectedRoute>} />
+                <Route path="/convert/audio" element={<ProtectedRoute><AudioConvertPage /></ProtectedRoute>} />
+                
+                {/* Resource Pages */}
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/help" element={<HelpCenterPage />} />
+                <Route path="/docs" element={<ApiDocsPage />} />
+                <Route path="/status" element={<StatusPage />} />
+                
+                {/* Company Pages */}
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/careers" element={<CareersPage />} />
+                <Route path="/legal" element={<LegalPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                
+                {/* Legal Pages */}
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/cookies" element={<CookiesPage />} />
+                
+                {/* 404 Route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </TooltipProvider>
+          </AppProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
