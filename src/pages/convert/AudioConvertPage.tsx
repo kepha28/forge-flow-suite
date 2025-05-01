@@ -7,7 +7,7 @@ import { useFileProcessing } from '@/hooks/useFileProcessing';
 import AppLayout from '@/components/layout/AppLayout';
 import FormatSelector from '@/components/FormatSelector';
 import { Button } from '@/components/ui/button';
-import { Download, Music, Volume2, Waveform } from 'lucide-react';
+import { Download, Music, Volume2, AudioWaveform } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
@@ -178,7 +178,7 @@ const AudioConvertPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="p-4 border rounded-md">
             <div className="flex items-center mb-2">
-              <Waveform className="h-5 w-5 mr-2 text-fileforge-blue" />
+              <AudioWaveform className="h-5 w-5 mr-2 text-fileforge-blue" />
               <h3 className="font-medium">Format Conversion</h3>
             </div>
             <p className="text-sm text-gray-500">
