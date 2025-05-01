@@ -14,6 +14,8 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import PageHeader from '@/components/PageHeader';
+import FeatureCard from '@/components/FeatureCard';
 
 const videoFormats = [
   { value: 'mp4', label: 'MP4 (.mp4)' },
@@ -86,16 +88,14 @@ const VideoConvertPage = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-4xl">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-4">Convert Videos</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Convert videos to different formats, resize and compress.
-        </p>
-      </div>
+    <div className="container mx-auto px-4 max-w-4xl">
+      <PageHeader 
+        title="Convert Videos" 
+        description="Convert videos to different formats, resize and compress."
+      />
 
       <Card className="mb-8">
-        <CardContent className="p-6">
+        <CardContent className="p-4 md:p-6">
           <FileUploader
             accept="video/*"
             maxFiles={1}
@@ -104,41 +104,48 @@ const VideoConvertPage = () => {
           />
           
           {currentFile && videoUrl && !isProcessing && !isConverted && (
-            <div className="mt-6 space-y-6">
-              <div className="border rounded-md p-2 bg-gray-50 dark:bg-gray-800">
+            <div className="mt-6 space-y-4 md:space-y-6">
+              <div className="border rounded-md p-2 bg-gray-50 dark:bg-gray-800 flex justify-center">
                 <video 
                   controls 
-                  className="w-full max-h-[300px]" 
+                  className="w-full max-h-[300px] object-contain" 
                   src={videoUrl}
                 >
                   Your browser does not support the video element.
                 </video>
               </div>
               
-              <Tabs defaultValue="convert" value={activeTab} onValueChange={setActiveTab}>
+              <Tabs 
+                defaultValue="convert" 
+                value={activeTab} 
+                onValueChange={setActiveTab} 
+                className="w-full"
+              >
                 <TabsList className="grid grid-cols-2 w-full">
                   <TabsTrigger value="convert">Convert</TabsTrigger>
                   <TabsTrigger value="trim">Trim & Edit</TabsTrigger>
                 </TabsList>
                 <TabsContent value="convert" className="space-y-4 mt-4">
-                  <FormatSelector 
-                    label="Output Format"
-                    value={outputFormat}
-                    options={videoFormats}
-                    onChange={setOutputFormat}
-                  />
-                  
-                  <FormatSelector 
-                    label="Resolution"
-                    value={resolution}
-                    options={resolutionOptions}
-                    onChange={setResolution}
-                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormatSelector 
+                      label="Output Format"
+                      value={outputFormat}
+                      options={videoFormats}
+                      onChange={setOutputFormat}
+                    />
+                    
+                    <FormatSelector 
+                      label="Resolution"
+                      value={resolution}
+                      options={resolutionOptions}
+                      onChange={setResolution}
+                    />
+                  </div>
                   
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <Label>Quality: {quality}%</Label>
-                      <span className="text-xs text-gray-500">
+                      <Label className="text-sm">Quality: {quality}%</Label>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
                         {quality < 50 ? 'Lower quality, smaller file' : 'Higher quality, larger file'}
                       </span>
                     </div>
@@ -158,26 +165,28 @@ const VideoConvertPage = () => {
                       checked={enableTrim} 
                       onCheckedChange={setEnableTrim} 
                     />
-                    <Label htmlFor="trim-video">Trim video</Label>
+                    <Label htmlFor="trim-video" className="text-sm">Trim video</Label>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Start Time (hh:mm:ss)</Label>
+                      <Label className="text-sm">Start Time (hh:mm:ss)</Label>
                       <Input
                         value={startTime}
                         onChange={(e) => setStartTime(e.target.value)}
                         disabled={!enableTrim}
                         placeholder="00:00:00"
+                        className="text-sm"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>End Time (hh:mm:ss)</Label>
+                      <Label className="text-sm">End Time (hh:mm:ss)</Label>
                       <Input
                         value={endTime}
                         onChange={(e) => setEndTime(e.target.value)}
                         disabled={!enableTrim}
                         placeholder="00:01:00"
+                        className="text-sm"
                       />
                     </div>
                   </div>
@@ -205,9 +214,9 @@ const VideoConvertPage = () => {
           
           {isConverted && (
             <div className="mt-6 space-y-4">
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-green-700 font-medium">Conversion completed successfully</p>
-                <p className="text-sm text-green-600">
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-900/20 dark:border-green-900">
+                <p className="text-green-700 dark:text-green-400 font-medium">Conversion completed successfully</p>
+                <p className="text-sm text-green-600 dark:text-green-500">
                   Your video {currentFile?.name} has been converted to {outputFormat.toUpperCase()}
                 </p>
               </div>
@@ -220,27 +229,19 @@ const VideoConvertPage = () => {
         </CardContent>
       </Card>
       
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-100 dark:border-gray-700 mt-8">
-        <h2 className="font-semibold text-lg mb-4">Video Conversion Features</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-4 border rounded-md">
-            <div className="flex items-center mb-2">
-              <Video className="h-5 w-5 mr-2 text-fileforge-blue" />
-              <h3 className="font-medium">Format Conversion</h3>
-            </div>
-            <p className="text-sm text-gray-500">
-              Convert videos between popular formats like MP4, AVI, MOV, MKV, and WebM with customizable settings.
-            </p>
-          </div>
-          <div className="p-4 border rounded-md">
-            <div className="flex items-center mb-2">
-              <Scissors className="h-5 w-5 mr-2 text-fileforge-blue" />
-              <h3 className="font-medium">Trim & Edit</h3>
-            </div>
-            <p className="text-sm text-gray-500">
-              Trim videos to specific sections, adjust resolution, and control quality settings for the perfect output.
-            </p>
-          </div>
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 md:p-6 border border-gray-100 dark:border-gray-700 mt-6 md:mt-8">
+        <h2 className="font-semibold text-base md:text-lg mb-4">Video Conversion Features</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          <FeatureCard
+            icon={<Video className="h-5 w-5 text-fileforge-blue" />}
+            title="Format Conversion"
+            description="Convert videos between popular formats like MP4, AVI, MOV, MKV, and WebM with customizable settings."
+          />
+          <FeatureCard
+            icon={<Scissors className="h-5 w-5 text-fileforge-blue" />}
+            title="Trim & Edit"
+            description="Trim videos to specific sections, adjust resolution, and control quality settings for the perfect output."
+          />
         </div>
       </div>
     </div>

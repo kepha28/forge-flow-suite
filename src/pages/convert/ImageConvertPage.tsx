@@ -12,6 +12,8 @@ import { useToast } from '@/components/ui/use-toast';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import PageHeader from '@/components/PageHeader';
+import FeatureCard from '@/components/FeatureCard';
 
 const imageFormats = [
   { value: 'png', label: 'PNG (.png)' },
@@ -72,16 +74,14 @@ const ImageConvertPage = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-4xl">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-4">Convert Images</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Convert images between formats with options to resize and optimize.
-        </p>
-      </div>
+    <div className="container mx-auto px-4 max-w-4xl">
+      <PageHeader 
+        title="Convert Images" 
+        description="Convert images between formats with options to resize and optimize."
+      />
 
       <Card className="mb-8">
-        <CardContent className="p-6">
+        <CardContent className="p-4 md:p-6">
           <FileUploader
             accept="image/*"
             maxFiles={1}
@@ -92,18 +92,18 @@ const ImageConvertPage = () => {
           {currentFile && previewUrl && !isProcessing && !isConverted && (
             <div className="mt-6 space-y-6">
               <div className="flex flex-col md:flex-row gap-6">
-                <div className="flex-1">
-                  <h3 className="text-lg font-medium mb-2">Preview</h3>
-                  <div className="border rounded-md p-2 bg-gray-50 dark:bg-gray-800">
+                <div className="w-full md:w-1/2">
+                  <h3 className="text-base md:text-lg font-medium mb-2">Preview</h3>
+                  <div className="border rounded-md p-2 bg-gray-50 dark:bg-gray-800 flex items-center justify-center min-h-[150px]">
                     <img 
                       src={previewUrl} 
                       alt="Preview" 
-                      className="max-w-full h-auto max-h-64 mx-auto" 
+                      className="max-w-full h-auto max-h-64 object-contain" 
                     />
                   </div>
                 </div>
                 
-                <div className="flex-1 space-y-4">
+                <div className="w-full md:w-1/2 space-y-4">
                   <FormatSelector 
                     label="Output Format"
                     value={outputFormat}
@@ -113,8 +113,8 @@ const ImageConvertPage = () => {
                   
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <Label>Quality: {quality}%</Label>
-                      <span className="text-xs text-gray-500">
+                      <Label className="text-sm">Quality: {quality}%</Label>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
                         {quality < 50 ? 'Lower quality, smaller file' : 'Higher quality, larger file'}
                       </span>
                     </div>
@@ -133,7 +133,7 @@ const ImageConvertPage = () => {
                       checked={maintainSize} 
                       onCheckedChange={setMaintainSize} 
                     />
-                    <Label htmlFor="maintain-size">Maintain original dimensions</Label>
+                    <Label htmlFor="maintain-size" className="text-sm">Maintain original dimensions</Label>
                   </div>
                 </div>
               </div>
@@ -159,9 +159,9 @@ const ImageConvertPage = () => {
           
           {isConverted && (
             <div className="mt-6 space-y-4">
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-green-700 font-medium">Conversion completed successfully</p>
-                <p className="text-sm text-green-600">
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-900/20 dark:border-green-900">
+                <p className="text-green-700 dark:text-green-400 font-medium">Conversion completed successfully</p>
+                <p className="text-sm text-green-600 dark:text-green-500">
                   Your image {currentFile?.name} has been converted to {outputFormat.toUpperCase()}
                 </p>
               </div>
@@ -174,33 +174,22 @@ const ImageConvertPage = () => {
         </CardContent>
       </Card>
       
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-100 dark:border-gray-700 mt-8">
-        <h2 className="font-semibold text-lg mb-4">Supported Image Formats</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="p-4 border rounded-md">
-            <p className="font-medium">.png</p>
-            <p className="text-sm text-gray-500">Lossless compression with transparency</p>
-          </div>
-          <div className="p-4 border rounded-md">
-            <p className="font-medium">.jpg</p>
-            <p className="text-sm text-gray-500">Smaller size, good for photos</p>
-          </div>
-          <div className="p-4 border rounded-md">
-            <p className="font-medium">.webp</p>
-            <p className="text-sm text-gray-500">Modern format with better compression</p>
-          </div>
-          <div className="p-4 border rounded-md">
-            <p className="font-medium">.svg</p>
-            <p className="text-sm text-gray-500">Vector graphics format</p>
-          </div>
-          <div className="p-4 border rounded-md">
-            <p className="font-medium">.gif</p>
-            <p className="text-sm text-gray-500">Supports animation</p>
-          </div>
-          <div className="p-4 border rounded-md">
-            <p className="font-medium">.bmp</p>
-            <p className="text-sm text-gray-500">Uncompressed bitmap format</p>
-          </div>
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 md:p-6 border border-gray-100 dark:border-gray-700 mt-6 md:mt-8">
+        <h2 className="font-semibold text-base md:text-lg mb-4">Supported Image Formats</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
+          {[
+            { format: '.png', desc: 'Lossless compression with transparency' },
+            { format: '.jpg', desc: 'Smaller size, good for photos' },
+            { format: '.webp', desc: 'Modern format with better compression' },
+            { format: '.svg', desc: 'Vector graphics format' },
+            { format: '.gif', desc: 'Supports animation' },
+            { format: '.bmp', desc: 'Uncompressed bitmap format' }
+          ].map((item, index) => (
+            <div key={index} className="p-3 md:p-4 border rounded-md hover:border-fileforge-blue/50 hover:shadow-sm transition-all">
+              <p className="font-medium text-sm md:text-base">{item.format}</p>
+              <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">{item.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

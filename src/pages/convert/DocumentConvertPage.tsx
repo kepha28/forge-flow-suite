@@ -9,6 +9,7 @@ import FormatSelector from '@/components/FormatSelector';
 import { Button } from '@/components/ui/button';
 import { Download, FileText } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
+import PageHeader from '@/components/PageHeader';
 
 const documentFormats = [
   { value: 'pdf', label: 'PDF (.pdf)' },
@@ -59,16 +60,14 @@ const DocumentConvertPage = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-4xl">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-4">Convert Documents</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Convert between document formats while preserving formatting and layout.
-        </p>
-      </div>
+    <div className="container mx-auto px-4 max-w-4xl">
+      <PageHeader 
+        title="Convert Documents" 
+        description="Convert between document formats while preserving formatting and layout."
+      />
 
       <Card className="mb-8">
-        <CardContent className="p-6">
+        <CardContent className="p-4 md:p-6">
           <FileUploader
             accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt"
             maxFiles={1}
@@ -77,7 +76,7 @@ const DocumentConvertPage = () => {
           />
           
           {currentFile && !isProcessing && !isConverted && (
-            <div className="mt-6 space-y-6">
+            <div className="mt-6 space-y-4 md:space-y-6">
               <FormatSelector 
                 label="Output Format"
                 value={outputFormat}
@@ -106,9 +105,9 @@ const DocumentConvertPage = () => {
           
           {isConverted && (
             <div className="mt-6 space-y-4">
-              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-green-700 font-medium">Conversion completed successfully</p>
-                <p className="text-sm text-green-600">
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-900/20 dark:border-green-900">
+                <p className="text-green-700 dark:text-green-400 font-medium">Conversion completed successfully</p>
+                <p className="text-sm text-green-600 dark:text-green-500">
                   Your file {currentFile?.name} has been converted to {outputFormat.toUpperCase()}
                 </p>
               </div>
@@ -121,33 +120,22 @@ const DocumentConvertPage = () => {
         </CardContent>
       </Card>
       
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-100 dark:border-gray-700 mt-8">
-        <h2 className="font-semibold text-lg mb-4">Supported Document Formats</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="p-4 border rounded-md">
-            <p className="font-medium">.pdf</p>
-            <p className="text-sm text-gray-500">Adobe PDF Document</p>
-          </div>
-          <div className="p-4 border rounded-md">
-            <p className="font-medium">.docx</p>
-            <p className="text-sm text-gray-500">Microsoft Word</p>
-          </div>
-          <div className="p-4 border rounded-md">
-            <p className="font-medium">.doc</p>
-            <p className="text-sm text-gray-500">Word 97-2003</p>
-          </div>
-          <div className="p-4 border rounded-md">
-            <p className="font-medium">.rtf</p>
-            <p className="text-sm text-gray-500">Rich Text Format</p>
-          </div>
-          <div className="p-4 border rounded-md">
-            <p className="font-medium">.txt</p>
-            <p className="text-sm text-gray-500">Plain Text</p>
-          </div>
-          <div className="p-4 border rounded-md">
-            <p className="font-medium">.odt</p>
-            <p className="text-sm text-gray-500">OpenDocument Text</p>
-          </div>
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 md:p-6 border border-gray-100 dark:border-gray-700 mt-6 md:mt-8">
+        <h2 className="font-semibold text-base md:text-lg mb-4">Supported Document Formats</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
+          {[
+            { format: '.pdf', desc: 'Adobe PDF Document' },
+            { format: '.docx', desc: 'Microsoft Word' },
+            { format: '.doc', desc: 'Word 97-2003' },
+            { format: '.rtf', desc: 'Rich Text Format' },
+            { format: '.txt', desc: 'Plain Text' },
+            { format: '.odt', desc: 'OpenDocument Text' }
+          ].map((item, index) => (
+            <div key={index} className="p-3 md:p-4 border rounded-md hover:border-fileforge-blue/50 hover:shadow-sm transition-all">
+              <p className="font-medium text-sm md:text-base">{item.format}</p>
+              <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">{item.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
