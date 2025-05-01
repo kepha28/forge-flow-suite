@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import FileUploader from '@/components/FileUploader';
 import ProcessingStatus from '@/components/ProcessingStatus';
 import { useFileProcessing } from '@/hooks/useFileProcessing';
-import ProtectedRoute from '@/components/layout/ProtectedRoute';
+import AppLayout from '@/components/layout/AppLayout';
 
 const DocumentConvertPage = () => {
   const { isProcessing, progress, processFile } = useFileProcessing();
@@ -51,8 +51,8 @@ const DocumentConvertPage = () => {
 
 export default function ProtectedDocumentConvertPage() {
   return (
-    <ProtectedRoute>
+    <AppLayout showSidebar={true}>
       <DocumentConvertPage />
-    </ProtectedRoute>
+    </AppLayout>
   );
 }

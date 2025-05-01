@@ -3,8 +3,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { FileUp, Zap, Shield } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const Hero = () => {
+  const { user } = useAuth();
+  
   return (
     <section className="relative bg-gradient-to-b from-fileforge-blue to-fileforge-teal py-20 text-white overflow-hidden">
       <div className="container mx-auto px-6 relative z-10">
@@ -22,7 +25,7 @@ const Hero = () => {
                 size="lg" 
                 className="bg-white text-fileforge-blue hover:bg-gray-100"
               >
-                <Link to="/auth">Get Started Free</Link>
+                <Link to={user ? "/convert" : "/auth"}>Get Started Free</Link>
               </Button>
               <Button 
                 asChild 
@@ -30,7 +33,7 @@ const Hero = () => {
                 variant="outline" 
                 className="border-white text-white hover:bg-white/10"
               >
-                <Link to="/files">Browse Files</Link>
+                <Link to="/pricing">View Pricing</Link>
               </Button>
             </div>
           </div>

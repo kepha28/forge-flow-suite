@@ -1,149 +1,150 @@
 
 import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { FileText, ArrowUp, ArrowDown } from 'lucide-react';
+import { 
+  LineChart, 
+  Line, 
+  AreaChart, 
+  Area, 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer 
+} from 'recharts';
 import AppLayout from '@/components/layout/AppLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, LineChart, PieChart, FileText } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
+import { useAuth } from '@/hooks/useAuth';
+
+// Sample data for charts
+const data = [
+  { name: 'Jan', conversions: 12, compressions: 8, security: 5 },
+  { name: 'Feb', conversions: 15, compressions: 10, security: 8 },
+  { name: 'Mar', conversions: 18, compressions: 12, security: 10 },
+  { name: 'Apr', conversions: 22, compressions: 15, security: 12 },
+  { name: 'May', conversions: 25, compressions: 18, security: 15 },
+  { name: 'Jun', conversions: 30, compressions: 20, security: 18 },
+];
 
 const StatsPage = () => {
-  // Mock data
-  const usageStatistics = {
-    totalConversions: 47,
-    totalSize: "258 MB",
-    averageSize: "5.5 MB",
-    popularFormat: "PDF to DOCX"
-  };
+  const { userProfile } = useAuth();
+
+  const StatCard = ({ 
+    title, 
+    value, 
+    change, 
+    changeType 
+  }: { 
+    title: string; 
+    value: string | number; 
+    change: string | number; 
+    changeType: 'increase' | 'decrease' 
+  }) => (
+    <Card>
+      <CardContent className="p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-medium text-gray-600">{title}</h3>
+          <div className="bg-fileforge-blue/10 w-10 h-10 rounded-full flex items-center justify-center">
+            <FileText className="h-5 w-5 text-fileforge-blue" />
+          </div>
+        </div>
+        <p className="text-3xl font-bold mb-2">{value}</p>
+        <div className={`flex items-center text-sm ${changeType === 'increase' ? 'text-green-500' : 'text-red-500'}`}>
+          {changeType === 'increase' ? <ArrowUp className="h-4 w-4 mr-1" /> : <ArrowDown className="h-4 w-4 mr-1" />}
+          <span>{change}% from last month</span>
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   return (
-    <AppLayout>
-      <div className="container mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Usage & Stats</h1>
-        
-        <div className="grid gap-6 md:grid-cols-3 mb-8">
+    <AppLayout showSidebar>
+      <div className="container mx-auto py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Usage & Statistics</h1>
+          <p className="text-gray-600">
+            Track your file processing usage and statistics over time.
+          </p>
+          {userProfile?.tier === 'free' && (
+            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-blue-700">
+                You are currently on the <strong>Free Plan</strong>. 
+                <a href="/pricing" className="underline ml-1">Upgrade to Pro</a> for unlimited usage and advanced features.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <StatCard title="Total Conversions" value={128} change={12} changeType="increase" />
+          <StatCard title="File Compressions" value={83} change={8} changeType="increase" />
+          <StatCard title="Secured Files" value={68} change={5} changeType="increase" />
+          <StatCard title="Storage Used" value="2.4 GB" change={15} changeType="decrease" />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Conversions</CardTitle>
-              <FileText className="h-4 w-4 text-fileforge-blue" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{usageStatistics.totalConversions}</div>
-              <p className="text-xs text-muted-foreground">+12% from last month</p>
+            <CardContent className="p-6">
+              <h3 className="text-lg font-medium mb-4">Monthly Activity</h3>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={data}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="conversions" stroke="#9b87f5" activeDot={{ r: 8 }} />
+                    <Line type="monotone" dataKey="compressions" stroke="#6E59A5" />
+                    <Line type="monotone" dataKey="security" stroke="#4B3F72" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
+
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Size Processed</CardTitle>
-              <BarChart className="h-4 w-4 text-fileforge-teal" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{usageStatistics.totalSize}</div>
-              <p className="text-xs text-muted-foreground">+5% from last month</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Most Popular Conversion</CardTitle>
-              <PieChart className="h-4 w-4 text-fileforge-blue" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{usageStatistics.popularFormat}</div>
-              <p className="text-xs text-muted-foreground">8 conversions this month</p>
+            <CardContent className="p-6">
+              <h3 className="text-lg font-medium mb-4">File Type Distribution</h3>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={data}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="conversions" fill="#9b87f5" />
+                    <Bar dataKey="compressions" fill="#6E59A5" />
+                    <Bar dataKey="security" fill="#4B3F72" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        <Tabs defaultValue="activity">
-          <TabsList>
-            <TabsTrigger value="activity">Recent Activity</TabsTrigger>
-            <TabsTrigger value="usage">Usage Limits</TabsTrigger>
-            <TabsTrigger value="trends">Trends</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="activity" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent File Activities</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-8">
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <div key={i} className="flex items-center">
-                      <div className="mr-4 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-                        <FileText className="h-5 w-5 text-gray-500" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <p className="font-medium">Document-{i}.pdf</p>
-                          <span className="text-xs text-gray-500">{i} day{i !== 1 ? 's' : ''} ago</span>
-                        </div>
-                        <p className="text-sm text-gray-600">Converted to DOCX</p>
-                      </div>
-                      <Badge variant="outline">Completed</Badge>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="usage" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Usage Limits</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Daily Conversion Limit</span>
-                      <span className="text-sm">3 / 3</span>
-                    </div>
-                    <div className="h-2 w-full bg-gray-100 rounded-full">
-                      <div className="h-full bg-fileforge-blue rounded-full" style={{ width: '100%' }}></div>
-                    </div>
-                    <p className="mt-2 text-xs text-gray-500">Free plan limit. Upgrade for unlimited conversions.</p>
-                  </div>
-                  
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Max File Size</span>
-                      <span className="text-sm">100 MB</span>
-                    </div>
-                    <p className="text-xs text-gray-500">Free plan limit. Upgrade for larger file support.</p>
-                  </div>
-                  
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Storage</span>
-                      <span className="text-sm">28 MB / 100 MB</span>
-                    </div>
-                    <div className="h-2 w-full bg-gray-100 rounded-full">
-                      <div className="h-full bg-fileforge-teal rounded-full" style={{ width: '28%' }}></div>
-                    </div>
-                    <p className="mt-2 text-xs text-gray-500">Files are stored for 30 days. Upgrade for more storage.</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="trends" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Usage Trends</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg border border-dashed">
-                  <div className="text-center">
-                    <LineChart className="mx-auto h-10 w-10 text-gray-400" />
-                    <p className="mt-2 text-sm text-gray-500">Usage trends will appear here as you use FileForge</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        <Card>
+          <CardContent className="p-6">
+            <h3 className="text-lg font-medium mb-4">Storage Usage Over Time</h3>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={data}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="conversions" stackId="1" fill="#9b87f5" stroke="#9b87f5" />
+                  <Area type="monotone" dataKey="compressions" stackId="1" fill="#6E59A5" stroke="#6E59A5" />
+                  <Area type="monotone" dataKey="security" stackId="1" fill="#4B3F72" stroke="#4B3F72" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </AppLayout>
   );

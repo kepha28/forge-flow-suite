@@ -86,10 +86,11 @@ const App = () => (
                 <Route path="/cookies" element={<CookiesPage />} />
                 
                 {/* Protected Routes */}
-                <Route path="/convert" element={<ProtectedRoute><ConvertPage /></ProtectedRoute>} />
-                <Route path="/compress" element={<ProtectedRoute><CompressPage /></ProtectedRoute>} />
-                <Route path="/secure" element={<ProtectedRoute><SecurePage /></ProtectedRoute>} />
+                <Route path="/convert" element={<ConvertPage />} />
+                <Route path="/compress" element={<CompressPage />} />
+                <Route path="/secure" element={<SecurePage />} />
                 
+                {/* Specialized conversion routes - no need for ProtectedRoute wrapper here as each component handles it */}
                 <Route path="/convert/document" element={<DocumentConvertPage />} />
                 <Route path="/convert/image" element={<ImageConvertPage />} />
                 <Route path="/convert/video" element={<VideoConvertPage />} />
